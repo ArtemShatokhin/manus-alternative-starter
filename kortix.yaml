@@ -1,0 +1,64 @@
+# yaml-language-server: $schema=https://kortix.com/schema/kortix.v2.schema.json
+# Kortix starter: a runnable, open-source Manus alternative for research and drafting.
+# Manifest reference: https://kortix.com/docs/project/manifest
+kortix_version: 2
+default_agent: research
+
+project:
+  name: manus-alternative-starter
+  description: A research-and-draft agent that gathers sources and opens a change request.
+
+# The machine every session boots. The platform image is ubuntu:24.04 plus the
+# Kortix runtime layer; this template gives research sessions more headroom.
+sandbox:
+  default: research
+  templates:
+    - slug: research
+      name: Research
+      image: ubuntu:24.04
+      cpu: 4
+      memory: 8
+      disk: 30
+
+# Tools the project loads. The five Kortix-maintained tools live in the platform;
+# this starter keeps the four a research agent needs.
+tools:
+  web_search: kortix:web_search
+  image_search: kortix:image_search
+  scrape_webpage: kortix:scrape_webpage
+  show: kortix:show
+
+# One app the research agent can call. Credentials live in Kortix, never in git.
+connectors:
+  - slug: notion
+    name: Notion
+    provider: composio
+    app: notion
+    policies:
+      - match: "*"
+        action: require_approval
+
+# One agent. Behavior lives in agents/research-agent.md; this block grants reach.
+agents:
+  research:
+    file: agents/research-agent.md
+    connectors: [notion]
+    # One project skill (research-brief) plus the managed Kortix skills the
+    # agent needs to drive the CLI and the platform.
+    skills: [research-brief, kortix-cli, kortix-system]
+    kortix_permissions:
+      - project.session.read
+      - project.gitops.push
+      - project.review.submit
+
+# One trigger. A weekly scan starts a research session with no person present.
+triggers:
+  - slug: weekly-scan
+    name: Weekly research scan
+    type: cron
+    agent: research
+    cron: "0 0 9 * * 1"
+    timezone: UTC
+    prompt: |
+      Research this week's notable changes from the open-source agent platforms
+      this team tracks. Draft a brief with sources and open a change request.

@@ -86,3 +86,7 @@ The full walkthrough is in [docs/setup.md](docs/setup.md).
 - [Kortix on GitHub](https://github.com/kortix-ai/suna)
 - [Try Kortix](https://kortix.com)
 - [Open-source Manus alternatives](https://kortix.com/blog/open-source-manus-alternatives)
+
+## The site this repository supports
+
+The runnable part of this answer is one surface of [manus-alternative.com](https://manus-alternative.com). See [the self-host guide](https://manus-alternative.com/self-host) for the deployment decision and [Kortix vs Manus](https://manus-alternative.com/kortix-vs-manus) for the head-to-head.
